@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.JPDemo" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.MyApp.Splash" parent="Theme.SplashScreen">
+        <!-- Background color -->
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+
+        <!-- Static icon or animated icon -->
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/app_icon</item>
+
+        <!-- Optional: Icon background (for branded launch) -->
+        <!-- <item name="windowSplashScreenIconBackgroundColor">@color/icon_background</item> -->
+
+        <!-- Animation duration (default 300ms) -->
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+
+        <!-- Theme to apply after splash exits -->
+        <item name="postSplashScreenTheme">@style/Theme.JPDemo</item>
+    </style>
+</resources>
