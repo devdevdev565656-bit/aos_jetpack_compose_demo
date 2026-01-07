@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
 
-            MainContent(windowSizeClass)
+            AppRoot(windowSizeClass)
         }
     }
 }

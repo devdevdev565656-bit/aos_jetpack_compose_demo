@@ -2,6 +2,7 @@ package app.aos.jp.demo.other.navigation3scenestask
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,9 +16,13 @@ import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
 
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.entryProvider
@@ -70,7 +75,7 @@ class ListDetailScene<T : Any>(
     }
 }
 
-class ListDetailSceneStrategy<T : Any>(
+/*class ListDetailSceneStrategy<T : Any>(
     private val windowSizeClass: androidx.compose.material3.windowsizeclass.WindowSizeClass
 ) : SceneStrategy<T> {
 
@@ -107,7 +112,7 @@ class ListDetailSceneStrategy<T : Any>(
             }
         )
     }
-}
+}*/
 
 @Composable
 fun Content( listEntry: NavEntry<AppRoute2>,detailEntry: NavEntry<AppRoute2>) {
@@ -161,23 +166,39 @@ fun DetailScreen() {
     }
 }
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun AppRoot(windowSizeClass: androidx.compose.material3.windowsizeclass.WindowSizeClass) {
     //val backStack = rememberNavBackStack<NavKey>(startDestination = AppRoute2.Home)
     val backStack: SnapshotStateList<AppRoute2> =
         mutableStateListOf(AppRoute2.Home)
-    val listDetailStrategy = remember {
+ /*   val listDetailStrategy = remember {
         ListDetailSceneStrategy<NavKey>(windowSizeClass)
-    }
+    }*/
+    val listDetailStrategy2 = rememberListDetailSceneStrategy<NavKey>()
+
     val singlePaneStrategy = remember { SinglePaneSceneStrategy<NavKey>() }
 
     NavDisplay(
         backStack = backStack,
         // 先試 List–Detail，失敗就退回單頁
-        sceneStrategy = listDetailStrategy then singlePaneStrategy,
+        sceneStrategy = listDetailStrategy2 then singlePaneStrategy,
         entryProvider = entryProvider {
-            entry<AppRoute2.Home> {
+            entry<AppRoute2.Home>(
+                metadata = ListDetailSceneStrategy.listPane(
+                    detailPlaceholder = {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("选择一个对话")
+                        }
+                    }
+                )
+            ) {
                 HomeScreen()
             }
             entry<AppRoute2.Detail> { key ->
