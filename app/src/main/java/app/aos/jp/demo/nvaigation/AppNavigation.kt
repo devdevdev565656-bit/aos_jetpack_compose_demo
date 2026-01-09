@@ -1,20 +1,35 @@
 package app.aos.jp.demo.nvaigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 
 import androidx.navigation3.ui.NavDisplay
 
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.scene.SinglePaneSceneStrategy
 import app.aos.jp.demo.ui.feature.home.HomeScreen
+import app.aos.jp.demo.ui.feature.setting.SettingScreen
 import app.aos.jp.demo.ui.feature.splash.AppSplashScreen
 
 
@@ -27,14 +42,39 @@ fun rememberAppNavigationState(
     val navigator = remember { AppNavigator(navState) }
     return navState to navigator
 }
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AppNavigation(windowSizeClass: androidx.compose.material3.windowsizeclass.WindowSizeClass) {
 
     val (navState, navigator) = rememberAppNavigationState()
 
+    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
+    val singlePaneStrategy = remember { SinglePaneSceneStrategy<NavKey>() }
+
+    val metadataMap: MutableMap<String, Any> = mutableMapOf()
+/*    metadataMap += NavDisplay.transitionSpec {
+        slideInVertically(
+            initialOffsetY = { it },
+            animationSpec = tween(1000)
+        ) togetherWith ExitTransition.KeepUntilTransitionsFinished
+    }*/
+    metadataMap += ListDetailSceneStrategy.listPane(
+        detailPlaceholder = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("选择一个对话")
+            }
+        }
+    )
     NavDisplay(
         backStack = navState.backStack,
         onBack = { navState.backStack.removeLastOrNull() },
+        sceneStrategy = listDetailStrategy then singlePaneStrategy,
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),      // Saveable 狀態
             rememberViewModelStoreNavEntryDecorator()   // ViewModel 支援（關鍵！）
@@ -45,12 +85,16 @@ fun AppNavigation(windowSizeClass: androidx.compose.material3.windowsizeclass.Wi
                     initialOffsetY = { it },
                     animationSpec = tween(1000)
                 ) togetherWith ExitTransition.KeepUntilTransitionsFinished
-            }
+            },
             ) {
                 AppSplashScreen(navigator)
             }
-            entry<AppRoute.Home> { key ->  // key 直接取得參數
-                HomeScreen()
+            entry<AppRoute.Home>(metadata = metadataMap) { key ->  // key 直接取得參數
+                HomeScreen(navigator)
+            }
+
+            entry<AppRoute.Settings>() { key ->  // key 直接取得參數
+                SettingScreen(navigator)
             }
         }
     )

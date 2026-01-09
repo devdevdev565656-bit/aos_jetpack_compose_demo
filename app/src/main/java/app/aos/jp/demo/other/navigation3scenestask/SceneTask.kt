@@ -31,6 +31,8 @@ import androidx.navigation3.scene.SceneStrategy
 import androidx.navigation3.scene.SceneStrategyScope
 import androidx.navigation3.scene.SinglePaneSceneStrategy
 import androidx.navigation3.ui.NavDisplay
+import app.aos.jp.demo.nvaigation.AppNavigator
+import app.aos.jp.demo.nvaigation.AppRoute
 
 @kotlinx.serialization.Serializable
 object TodosHomeKey : NavKey  // 清單頁
@@ -147,6 +149,7 @@ fun HomeScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
+                        //appNavigator.navigate(AppRoute.Settings)
                       //  backStack.push(NavKey.Detail(id))
                     }
                     .padding(8.dp)
@@ -197,7 +200,7 @@ fun AppRoot(windowSizeClass: androidx.compose.material3.windowsizeclass.WindowSi
                             Text("选择一个对话")
                         }
                     }
-                )
+                ),
             ) {
                 HomeScreen()
             }

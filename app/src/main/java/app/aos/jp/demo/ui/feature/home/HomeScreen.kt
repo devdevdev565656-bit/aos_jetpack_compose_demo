@@ -1,5 +1,6 @@
 package app.aos.jp.demo.ui.feature.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,17 +18,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.aos.jp.demo.Greeting
+import app.aos.jp.demo.nvaigation.AppNavigation
+import app.aos.jp.demo.nvaigation.AppNavigator
+import app.aos.jp.demo.nvaigation.AppRoute
 
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(appNavigator: AppNavigator) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        BasicList()
+        BasicList(appNavigator)
     }
 }
 
 @Composable
-fun BasicList() {
+fun BasicList(appNavigator: AppNavigator) {
     val items = (1..50).map { "Item $it" }
 
     LazyColumn(
@@ -38,6 +42,9 @@ fun BasicList() {
     ) {
         itemsIndexed(items)  { index, item ->
             ListItem(
+                modifier = Modifier.clickable {
+                    appNavigator.navigate(AppRoute.Settings)
+                },
                 headlineContent = { Text(item) },
                 supportingContent = { Text("Supporting text") }
             )
