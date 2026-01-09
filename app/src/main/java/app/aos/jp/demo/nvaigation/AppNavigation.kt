@@ -80,7 +80,8 @@ fun AppNavigation(windowSizeClass: androidx.compose.material3.windowsizeclass.Wi
             rememberViewModelStoreNavEntryDecorator()   // ViewModel 支援（關鍵！）
         ),
         entryProvider = entryProvider {
-            entry<AppRoute.Splash>(metadata = NavDisplay.transitionSpec {
+            entry<AppRoute.Splash>(
+                metadata = NavDisplay.transitionSpec {
                 slideInVertically(
                     initialOffsetY = { it },
                     animationSpec = tween(1000)

@@ -30,7 +30,7 @@ fun AppSplashScreen(appNavigator: AppNavigator) {
     )
 
     LaunchedEffect(Unit) {
-        kotlinx.coroutines.delay(2000) // Simulate loading (e.g., auth check)
+        kotlinx.coroutines.delay(1000) // Simulate loading (e.g., auth check)
         appNavigator.replaceAllWith(AppRoute.Home)
     }
 

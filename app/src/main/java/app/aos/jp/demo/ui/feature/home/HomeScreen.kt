@@ -2,6 +2,7 @@ package app.aos.jp.demo.ui.feature.home
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -21,12 +22,17 @@ import app.aos.jp.demo.Greeting
 import app.aos.jp.demo.nvaigation.AppNavigation
 import app.aos.jp.demo.nvaigation.AppNavigator
 import app.aos.jp.demo.nvaigation.AppRoute
+import app.aos.jp.demo.ui.components.CustomSearchWithHistory
+import app.aos.jp.demo.ui.components.SearchBarWithHistory
 
 
 @Composable
 fun HomeScreen(appNavigator: AppNavigator) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        BasicList(appNavigator)
+        Column(modifier = Modifier.padding(top= innerPadding.calculateTopPadding())) {
+            CustomSearchWithHistory()
+            BasicList(appNavigator)
+        }
     }
 }
 

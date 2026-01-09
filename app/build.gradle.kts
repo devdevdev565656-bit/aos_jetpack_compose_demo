@@ -68,4 +68,5 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.9.0")
     implementation("androidx.compose.foundation:foundation:1.7.0")
     implementation("androidx.compose.material3:material3:1.3.0")
+    implementation("androidx.compose.material:material-icons-core")
 }
