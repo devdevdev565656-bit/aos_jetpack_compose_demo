@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.aos.jp.demo.nvaigation.AppNavigator
+import app.aos.jp.demo.ui.feature.cathome.myaccount.MyAccountScreen
 import app.aos.jp.demo.ui.theme.JPDemoTheme
 import kotlinx.coroutines.launch
 
@@ -150,9 +151,14 @@ fun CustomCatHomeViewPager() {
         }
 
         HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { page ->
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Page: ${tabs[page].title}")
+            if (page == 0) {
+                MyAccountScreen()
+            } else {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Page: ${tabs[page].title}")
+                }
             }
+
         }
 
 

@@ -71,5 +71,12 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.7.0")
     implementation("androidx.compose.material3:material3:1.3.0")
     implementation("androidx.compose.material:material-icons-core")
+    implementation("io.github.thechance101:chart:1.1.0")
+
+
+
+
+
+
 
 }
