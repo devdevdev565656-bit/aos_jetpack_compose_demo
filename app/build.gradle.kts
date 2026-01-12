@@ -52,6 +52,8 @@ dependencies {
     implementation(libs.androidx.compose.adaptive)
     implementation(libs.androidx.compose.material3.window.size.class1)
     implementation(libs.androidx.compose.adaptive.navigation3)
+    implementation(libs.androidx.compose.foundation.layout)
+    implementation(libs.androidx.ui)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -69,4 +71,5 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.7.0")
     implementation("androidx.compose.material3:material3:1.3.0")
     implementation("androidx.compose.material:material-icons-core")
+
 }

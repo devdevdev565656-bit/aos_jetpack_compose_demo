@@ -14,4 +14,7 @@ sealed interface AppRoute : NavKey {
 
     @Serializable
     data object Settings : AppRoute
+
+    @Serializable
+    data object CatHome : AppRoute
 }
