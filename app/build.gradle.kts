@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.compose.adaptive.navigation3)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.ui)
+    implementation(libs.androidx.compose.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -72,6 +73,10 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.3.0")
     implementation("androidx.compose.material:material-icons-core")
     implementation("io.github.thechance101:chart:1.1.0")
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0")
+    val lottieVersion = "6.7.1"  // check https://github.com/airbnb/lottie-android/releases for latest
+    implementation("com.airbnb.android:lottie-compose:$lottieVersion")
 
 
 
