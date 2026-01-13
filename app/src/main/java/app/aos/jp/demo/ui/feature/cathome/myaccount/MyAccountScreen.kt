@@ -4,6 +4,7 @@ package app.aos.jp.demo.ui.feature.cathome.myaccount
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,8 +30,19 @@ import com.aay.compose.radarChart.model.PolygonStyle
 
 
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Text
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -47,6 +59,8 @@ import com.bumptech.glide.integration.compose.GlideImage
 @OptIn(ExperimentalFoundationApi::class, ExperimentalGlideComposeApi::class)
 @Composable
 fun MyAccountScreen() {
+    var textWidth by remember { mutableStateOf(0.dp) }
+    val density = LocalDensity.current
     val composition by rememberLottieComposition(
         LottieCompositionSpec.Asset("lottie_pen.json")
     )
@@ -73,7 +87,7 @@ fun MyAccountScreen() {
                     .background(color = Color.LightGray, shape = RoundedCornerShape(12.dp))
                     .padding(5.dp)
             ) {
-                val (imgAlbum, imgEdit, lottiePen) = createRefs()
+                val (imgAlbum, imgEdit, lottiePen, tvLevel) = createRefs()
 
                 GlideImage(
                     model = R.drawable.album,  // Direct drawable ID
@@ -89,7 +103,7 @@ fun MyAccountScreen() {
                     model = R.drawable.edit,  // Direct drawable ID
                     contentDescription = "App icon",
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(20.dp)
                         .constrainAs(imgEdit) {
                             bottom.linkTo(imgAlbum.bottom)
                             start.linkTo(imgAlbum.end, margin = -15.dp)
@@ -98,11 +112,49 @@ fun MyAccountScreen() {
                 LottieAnimation(
                     composition = composition,
                     progress = { progress },           // ← binds animated value
-                    modifier = Modifier.size(30.dp).constrainAs(lottiePen) {
-                        top.linkTo(imgAlbum.top)
-                        start.linkTo(imgAlbum.end, margin = -15.dp)
-                    }
+                    modifier = Modifier
+                        .size(30.dp)
+                        .constrainAs(lottiePen) {
+                            top.linkTo(imgAlbum.top)
+                            start.linkTo(imgAlbum.end, margin = -15.dp)
+                        }
                 )
+                Column(
+                    modifier = Modifier.constrainAs(tvLevel) {
+                        bottom.linkTo(imgAlbum.bottom)
+                        start.linkTo(imgAlbum.end, margin = 10.dp)
+                    },
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        "Lv.30",
+                        fontWeight = FontWeight.Bold,          // makes it bold
+                        fontSize = 20.sp,
+                        modifier = Modifier
+                            .border(
+                                width = 1.dp,
+                                color = Color.Blue,
+                                shape = RoundedCornerShape(16.dp)  // rounded corners (adjust dp as needed)
+                            )
+                            .padding(5.dp)
+                            .onGloballyPositioned { coordinates ->
+                                textWidth = with(density) { coordinates.size.width.toDp() }
+                            }
+                    )
+
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .padding(top = 5.dp, bottom = 5.dp)
+                            .width(textWidth),
+                        thickness = 0.5.dp,           // line thickness
+                        color = Color.Black     // optional: default is onSurfaceVariant
+                    )
+
+                    Text(
+                        "LEVEL",
+                        fontSize = 20.sp,
+                    )
+                }
             }
 
 
@@ -154,7 +206,6 @@ fun FiveStarRadarChart5CirclesAligned() {
         )
     )
 }
-
 
 
 @Preview(showBackground = true)
