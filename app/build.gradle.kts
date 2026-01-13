@@ -77,6 +77,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0")
     val lottieVersion = "6.7.1"  // check https://github.com/airbnb/lottie-android/releases for latest
     implementation("com.airbnb.android:lottie-compose:$lottieVersion")
+    implementation("com.github.kevinnzou:compose-progressindicator:1.0.0")
+
 
 
 

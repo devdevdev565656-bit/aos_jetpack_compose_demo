@@ -5,7 +5,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +33,7 @@ import com.aay.compose.radarChart.model.PolygonStyle
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -46,7 +49,9 @@ import androidx.compose.ui.text.TextLinkStyles
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import app.aos.jp.demo.R
+import app.aos.jp.demo.ui.components.myaccount.LevelProgressBar
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -54,6 +59,7 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.kevinnzou.compose.progressindicator.SimpleProgressIndicatorWithAnim
 
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalGlideComposeApi::class)
@@ -87,7 +93,7 @@ fun MyAccountScreen() {
                     .background(color = Color.LightGray, shape = RoundedCornerShape(12.dp))
                     .padding(5.dp)
             ) {
-                val (imgAlbum, imgEdit, lottiePen, tvLevel) = createRefs()
+                val (imgAlbum, imgEdit, lottiePen, tvLevel, lyLevel) = createRefs()
 
                 GlideImage(
                     model = R.drawable.album,  // Direct drawable ID
@@ -123,7 +129,7 @@ fun MyAccountScreen() {
                     modifier = Modifier.constrainAs(tvLevel) {
                         bottom.linkTo(imgAlbum.bottom)
                         start.linkTo(imgAlbum.end, margin = 10.dp)
-                    },
+                    }.background(Color.Red),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
@@ -154,7 +160,32 @@ fun MyAccountScreen() {
                         "LEVEL",
                         fontSize = 20.sp,
                     )
+
+
                 }
+
+                Column (
+                    modifier = Modifier
+                        .constrainAs(lyLevel) {
+                            top.linkTo(parent.top)
+                            start.linkTo(tvLevel.end)
+                           bottom.linkTo(parent.bottom)
+                            end.linkTo(parent.end)
+                            width = Dimension.fillToConstraints
+                        },
+                    content = {
+                        SimpleProgressIndicatorWithAnim(
+                            modifier = Modifier
+                                .padding(horizontal = 5.dp)
+                                .height(4.dp)
+                                .fillMaxWidth() ,
+                            0.7f,
+                            cornerRadius = 35.dp,
+                            thumbRadius = 0.dp,
+                            thumbOffset = 0.5.dp
+                        )
+                    }
+                )
             }
 
 
