@@ -37,10 +37,16 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -52,6 +58,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import app.aos.jp.demo.R
 import app.aos.jp.demo.ui.components.myaccount.LevelProgressBar
+import app.aos.jp.demo.ui.components.pdf.PdfScreen
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -62,7 +69,9 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.kevinnzou.compose.progressindicator.SimpleProgressIndicatorWithAnim
 
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalGlideComposeApi::class,
+    ExperimentalMaterial3Api::class
+)
 @Composable
 fun MyAccountScreen() {
     var textWidth by remember { mutableStateOf(0.dp) }
@@ -70,7 +79,11 @@ fun MyAccountScreen() {
     val composition by rememberLottieComposition(
         LottieCompositionSpec.Asset("lottie_pen.json")
     )
+    val scaffoldState = rememberBottomSheetScaffoldState()
 
+    val pagerEnabled =
+        scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded &&
+                !scaffoldState.bottomSheetState.isAnimationRunning
     // Optional: control playback, speed, etc.
     val progress by animateLottieCompositionAsState(
         composition = composition,
@@ -78,119 +91,133 @@ fun MyAccountScreen() {
         // isPlaying = true,                            // can be controlled by state
         // speed = 1.5f                                 // example: 1.5× faster
     )
-    CompositionLocalProvider(LocalOverscrollFactory provides null) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-        ) {
-            FiveStarRadarChart5CirclesAligned()
-
-            ConstraintLayout(
+    Box {
+        BottomSheetScaffold(
+            scaffoldState = scaffoldState,
+            sheetPeekHeight = 80.dp,
+            sheetContent = { Text("Sheet in page page", Modifier.padding(16.dp)) }
+        ) { padding ->
+            // 用一層 Box 接住內容
+            Box(Modifier.fillMaxSize().padding(padding)) {
+                Text("Page page content")
+            }
+        }
+       /* CompositionLocalProvider(LocalOverscrollFactory provides null) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                    .background(color = Color.LightGray, shape = RoundedCornerShape(12.dp))
-                    .padding(5.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
             ) {
-                val (imgAlbum, imgEdit, lottiePen, tvLevel, lyLevel) = createRefs()
-
-                GlideImage(
-                    model = R.drawable.album,  // Direct drawable ID
-                    contentDescription = "App icon",
+                FiveStarRadarChart5CirclesAligned()
+                ConstraintLayout(
                     modifier = Modifier
-                        .size(136.dp)
-                        .constrainAs(imgAlbum) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                        }
-                )
-                GlideImage(
-                    model = R.drawable.edit,  // Direct drawable ID
-                    contentDescription = "App icon",
-                    modifier = Modifier
-                        .size(20.dp)
-                        .constrainAs(imgEdit) {
-                            bottom.linkTo(imgAlbum.bottom)
-                            start.linkTo(imgAlbum.end, margin = -15.dp)
-                        }
-                )
-                LottieAnimation(
-                    composition = composition,
-                    progress = { progress },           // ← binds animated value
-                    modifier = Modifier
-                        .size(30.dp)
-                        .constrainAs(lottiePen) {
-                            top.linkTo(imgAlbum.top)
-                            start.linkTo(imgAlbum.end, margin = -15.dp)
-                        }
-                )
-                Column(
-                    modifier = Modifier.constrainAs(tvLevel) {
-                        bottom.linkTo(imgAlbum.bottom)
-                        start.linkTo(imgAlbum.end, margin = 10.dp)
-                    }.background(Color.Red),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .background(color = Color.LightGray, shape = RoundedCornerShape(12.dp))
+                        .padding(5.dp)
                 ) {
-                    Text(
-                        "Lv.30",
-                        fontWeight = FontWeight.Bold,          // makes it bold
-                        fontSize = 20.sp,
+                    val (imgAlbum, imgEdit, lottiePen, tvLevel, lyLevel) = createRefs()
+
+                    GlideImage(
+                        model = R.drawable.album,  // Direct drawable ID
+                        contentDescription = "App icon",
                         modifier = Modifier
-                            .border(
-                                width = 1.dp,
-                                color = Color.Blue,
-                                shape = RoundedCornerShape(16.dp)  // rounded corners (adjust dp as needed)
-                            )
-                            .padding(5.dp)
-                            .onGloballyPositioned { coordinates ->
-                                textWidth = with(density) { coordinates.size.width.toDp() }
+                            .size(136.dp)
+                            .constrainAs(imgAlbum) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
                             }
                     )
-
-                    HorizontalDivider(
+                    GlideImage(
+                        model = R.drawable.edit,  // Direct drawable ID
+                        contentDescription = "App icon",
                         modifier = Modifier
-                            .padding(top = 5.dp, bottom = 5.dp)
-                            .width(textWidth),
-                        thickness = 0.5.dp,           // line thickness
-                        color = Color.Black     // optional: default is onSurfaceVariant
+                            .size(20.dp)
+                            .constrainAs(imgEdit) {
+                                bottom.linkTo(imgAlbum.bottom)
+                                start.linkTo(imgAlbum.end, margin = -15.dp)
+                            }
                     )
-
-                    Text(
-                        "LEVEL",
-                        fontSize = 20.sp,
+                    LottieAnimation(
+                        composition = composition,
+                        progress = { progress },           // ← binds animated value
+                        modifier = Modifier
+                            .size(30.dp)
+                            .constrainAs(lottiePen) {
+                                top.linkTo(imgAlbum.top)
+                                start.linkTo(imgAlbum.end, margin = -15.dp)
+                            }
                     )
+                    Column(
+                        modifier = Modifier.constrainAs(tvLevel) {
+                            bottom.linkTo(imgAlbum.bottom)
+                            start.linkTo(imgAlbum.end, margin = 10.dp)
+                        }.background(Color.Red),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(
+                            "Lv.30",
+                            fontWeight = FontWeight.Bold,          // makes it bold
+                            fontSize = 20.sp,
+                            modifier = Modifier
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.Blue,
+                                    shape = RoundedCornerShape(16.dp)  // rounded corners (adjust dp as needed)
+                                )
+                                .padding(5.dp)
+                                .onGloballyPositioned { coordinates ->
+                                    textWidth = with(density) { coordinates.size.width.toDp() }
+                                }
+                        )
+
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .padding(top = 5.dp, bottom = 5.dp)
+                                .width(textWidth),
+                            thickness = 0.5.dp,           // line thickness
+                            color = Color.Black     // optional: default is onSurfaceVariant
+                        )
+
+                        Text(
+                            "LEVEL",
+                            fontSize = 20.sp,
+                        )
 
 
+                    }
+
+                    Column (
+                        modifier = Modifier
+                            .constrainAs(lyLevel) {
+                                top.linkTo(parent.top)
+                                start.linkTo(tvLevel.end)
+                                bottom.linkTo(parent.bottom)
+                                end.linkTo(parent.end)
+                                width = Dimension.fillToConstraints
+                            },
+                        content = {
+                            SimpleProgressIndicatorWithAnim(
+                                modifier = Modifier
+                                    .padding(horizontal = 5.dp)
+                                    .height(4.dp)
+                                    .fillMaxWidth() ,
+                                0.7f,
+                                cornerRadius = 35.dp,
+                                thumbRadius = 0.dp,
+                                thumbOffset = 0.5.dp
+                            )
+                        }
+                    )
                 }
 
-                Column (
-                    modifier = Modifier
-                        .constrainAs(lyLevel) {
-                            top.linkTo(parent.top)
-                            start.linkTo(tvLevel.end)
-                           bottom.linkTo(parent.bottom)
-                            end.linkTo(parent.end)
-                            width = Dimension.fillToConstraints
-                        },
-                    content = {
-                        SimpleProgressIndicatorWithAnim(
-                            modifier = Modifier
-                                .padding(horizontal = 5.dp)
-                                .height(4.dp)
-                                .fillMaxWidth() ,
-                            0.7f,
-                            cornerRadius = 35.dp,
-                            thumbRadius = 0.dp,
-                            thumbOffset = 0.5.dp
-                        )
-                    }
-                )
+
             }
-
-
-        }
+        }*/
+       // MyBottomSheetScaffold()
     }
+
+  //  MyBottomSheetScaffold()
 
 }
 
@@ -237,7 +264,34 @@ fun FiveStarRadarChart5CirclesAligned() {
         )
     )
 }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyBottomSheetScaffold() {
+    val scaffoldState = rememberBottomSheetScaffoldState()
+    val scope = rememberCoroutineScope()
 
+    BottomSheetScaffold(
+        scaffoldState = scaffoldState,
+        sheetContainerColor = Color.Transparent,
+        sheetContentColor = Color.Transparent,
+        contentColor = Color.Red,
+        sheetPeekHeight = 100.dp, // 預設露出 100dp 高度
+        sheetContent = {
+            // Sheet 的內容
+           /* Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Swipe me up!", style = MaterialTheme.typography.headlineMedium)
+            }*/
+          //  PdfScreen("")
+        }
+    ) { innerPadding ->
+
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
