@@ -57,9 +57,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.aos.jp.demo.nvaigation.AppNavigator
+import app.aos.jp.demo.ui.components.pdf.PdfScreen
 import app.aos.jp.demo.ui.feature.cathome.myaccount.MyAccountScreen
 import app.aos.jp.demo.ui.theme.JPDemoTheme
 import kotlinx.coroutines.launch
+import kotlin.collections.set
 
 @Composable
 fun CatHomeScreen(appNavigator: AppNavigator) {
@@ -198,6 +200,12 @@ fun PageWithBottomSheet(
     }
     val scope = rememberCoroutineScope() // <--- Get Scope
 
+    val tabs = CatHomeTab.entries
+    val pagerState = rememberPagerState(pageCount = { tabs.size })
+
+    val density = LocalDensity.current
+    val tabWidths = remember { mutableStateMapOf<Int, Dp>() }
+    var currentSheetExpanded by remember { mutableStateOf(false) }
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         modifier = Modifier.fillMaxSize().background(Color.Transparent),
@@ -207,7 +215,94 @@ fun PageWithBottomSheet(
         contentColor = Color.Transparent,
         containerColor = Color.Transparent,
         sheetContent = {
-            Column(
+            SecondaryScrollableTabRow(
+                selectedTabIndex = pagerState.currentPage,
+                containerColor = Color(0xFFf29f3a),
+                contentColor = Color.White,
+                // 1. Change the Tab Bar Height here (e.g., 40.dp for a slim look)
+                modifier = Modifier.height(44.dp),
+                edgePadding = 0.dp,
+                indicator = {
+                    Box(
+                        Modifier
+                            .tabIndicatorOffset(pagerState.currentPage, matchContentSize = false)
+                            .fillMaxWidth()
+                            .wrapContentSize(Alignment.BottomCenter)
+                    ) {
+                        val currentWidth = tabWidths[pagerState.currentPage] ?: 0.dp
+                        Box(
+                            modifier = Modifier
+                                .width(currentWidth)
+                                .height(4.dp)
+                                // 1. Clip the shape or use background(color, shape)
+                                .clip(RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomEnd = 4.dp, bottomStart = 4.dp))
+                                .background(Color.White)
+                        )
+                    }
+                },
+
+                divider = {}
+            ) {
+                tabs.forEachIndexed { index, tab ->
+                    Tab(
+                        selected = pagerState.currentPage == index,
+                        onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
+                        modifier = Modifier.padding(horizontal = 5.dp)
+                    ) {
+                        // 2. Ensure the inner container fills the custom height
+                        Row(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(bottom = 3.dp) // Gap to indicator
+                                .onSizeChanged { size ->
+                                    tabWidths[index] = with(density) { size.width.toDp() }
+                                },
+                            verticalAlignment = Alignment.Bottom, // Align items to the bottom
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            val iconId = "icon"  // 只是個識別符，隨便取
+                            // 建立帶有內嵌圖示的文字
+                            val annotatedString = buildAnnotatedString {
+                                // 先插入 Icon 的位置
+                                appendInlineContent(iconId, "[圖示]")
+
+                                append("${tab.title}")
+
+                            }
+
+                            val inlineContent = mapOf(
+                                iconId to InlineTextContent(
+                                    placeholder = Placeholder(
+                                        width = 24.sp,           // Icon 寬度
+                                        height = 24.sp,          // Icon 高度
+                                        placeholderVerticalAlign = PlaceholderVerticalAlign.Bottom  // 垂直對齊方式
+                                        // 改成 PlaceholderVerticalAlign.Top 就會貼齊文字最頂端
+                                    ),
+                                    children = {
+                                        Icon(tab.icon, contentDescription = null, modifier = Modifier.size(24.dp))
+                                    }
+                                )
+                            )
+                            // Icon(tab.icon, contentDescription = null, modifier = Modifier.size(16.dp))
+                            Spacer(Modifier.width(6.dp))
+                            Text(text =annotatedString, fontSize = 24.sp,inlineContent = inlineContent)  // 關鍵！把 Icon 綁進去)
+                        }
+                    }
+                }
+            }
+
+            HorizontalPager(state = pagerState, userScrollEnabled = !currentSheetExpanded, modifier = Modifier.weight(1f)) { page ->
+                if (page == 0) {
+                    PdfScreen("")
+                    //MyAccountScreen()
+                } else {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("Page: ${tabs[page].title}")
+                    }
+                }
+
+            }
+     /*       Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
@@ -232,7 +327,7 @@ fun PageWithBottomSheet(
                 }) {
                     Text("切換展開/收合")
                 }
-            }
+            }*/
         }
     ) { padding ->
         Box(
