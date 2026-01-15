@@ -16,6 +16,8 @@ import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -30,6 +32,8 @@ import app.aos.jp.demo.ui.feature.cathome.CatHomeScreen
 import app.aos.jp.demo.ui.feature.home.HomeScreen
 import app.aos.jp.demo.ui.feature.setting.SettingScreen
 import app.aos.jp.demo.ui.feature.splash.AppSplashScreen
+import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 
 @Composable
@@ -37,8 +41,16 @@ fun rememberAppNavigationState(
     startRoute: AppRoute = AppRoute.Splash
 ): Pair<AppNavigationState, AppNavigator> {
     // 可用 rememberSerializable 包起來做狀態持久化，這裡先簡化
-    val navState = remember { AppNavigationState(startRoute) }
-    val navigator = remember { AppNavigator(navState) }
+ /*   val navState = remember { AppNavigationState(startRoute) }
+    val navigator = remember { AppNavigator(navState) }*/
+    // 1. 產生 State (UI 層負責生命週期與保存)
+    val navState = rememberSaveable(saver = AppNavigationState.Saver) {
+        AppNavigationState(startRoute)
+    }
+
+    // 2. 注入 Navigator (Koin 負責依賴建構)
+    // 使用 parametersOf 將 navState 傳給 Koin module 裡的 factory
+    val navigator: AppNavigator = koinInject { parametersOf(navState) }
     return navState to navigator
 }
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)

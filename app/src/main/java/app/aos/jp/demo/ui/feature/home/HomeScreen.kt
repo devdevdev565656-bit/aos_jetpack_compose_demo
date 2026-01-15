@@ -22,9 +22,9 @@ import app.aos.jp.demo.ui.components.CustomSearchBar
 
 
 @Composable
-fun HomeScreen(appNavigator: AppNavigator) {
+fun HomeScreen(appNavigator: AppNavigator ) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Column(modifier = Modifier.padding(top= innerPadding.calculateTopPadding())) {
+        Column(modifier = Modifier.padding(top= innerPadding.calculateTopPadding(), bottom = innerPadding.calculateBottomPadding())) {
             CustomSearchBar()
             BasicList(appNavigator)
         }

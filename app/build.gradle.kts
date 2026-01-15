@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.runtime.saveable)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,6 +80,19 @@ dependencies {
     implementation(libs.compose.progressindicator)
 
     implementation("io.github.grizzi91:bouquet:1.1.3")
+
+    //Koin
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.navigation)
+
+    // ViewModel + Lifecycle
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.android)
 
 
 
