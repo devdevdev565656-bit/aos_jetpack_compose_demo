@@ -62,24 +62,23 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation(libs.androidx.core.splashscreen)
 
-    implementation("androidx.navigation3:navigation3-runtime:1.0.0")  // 最新穩定版
-    implementation("androidx.navigation3:navigation3-ui:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-navigation3:2.10.0")  // ViewModel 支援
+    implementation(libs.androidx.navigation3.runtime)  // 最新穩定版
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)  // ViewModel 支援
     // 如需深層連結，可加 kotlinx-serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.9.0")
+    implementation(libs.kotlinx.serialization.core)
     implementation("androidx.compose.foundation:foundation:1.7.0")
-    implementation("androidx.compose.material3:material3:1.3.0")
-    implementation("androidx.compose.material:material-icons-core")
-    implementation("io.github.thechance101:chart:1.1.0")
-    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0")
-    val lottieVersion = "6.7.1"  // check https://github.com/airbnb/lottie-android/releases for latest
+    implementation("androidx.compose.material3:material3:1.4.0")
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.chart)
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta08")
+    implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.lottie.compose)
     implementation(libs.compose.progressindicator)
 
-    implementation("io.github.grizzi91:bouquet:1.1.2")
+    implementation("io.github.grizzi91:bouquet:1.1.3")
 
 
 
